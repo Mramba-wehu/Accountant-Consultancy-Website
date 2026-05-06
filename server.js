@@ -23,23 +23,43 @@ app.use(session({
 // Mock Database path
 const dataPath = path.join(__dirname, 'data', 'content.json');
 
-// Nodemailer Transporter (Ethereal Email for testing)
+// Nodemailer Transporter Configuration
 let transporter;
-nodemailer.createTestAccount((err, account) => {
-    if (err) {
-        console.error('Failed to create a testing account. ' + err.message);
-        return process.exit(1);
-    }
+
+if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    // Production: Use real Outlook/Hotmail SMTP
     transporter = nodemailer.createTransport({
-        host: account.smtp.host,
-        port: account.smtp.port,
-        secure: account.smtp.secure,
+        host: 'smtp-mail.outlook.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
         auth: {
-            user: account.user,
-            pass: account.pass
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        },
+        tls: {
+            ciphers: 'SSLv3'
         }
     });
-});
+    console.log("Production email transporter configured.");
+} else {
+    // Development: Fallback to Ethereal testing account
+    nodemailer.createTestAccount((err, account) => {
+        if (err) {
+            console.error('Failed to create a testing account. ' + err.message);
+            return process.exit(1);
+        }
+        transporter = nodemailer.createTransport({
+            host: account.smtp.host,
+            port: account.smtp.port,
+            secure: account.smtp.secure,
+            auth: {
+                user: account.user,
+                pass: account.pass
+            }
+        });
+        console.log("Development test email transporter (Ethereal) configured.");
+    });
+}
 
 // Authentication Middleware
 function isAuthenticated(req, res, next) {
