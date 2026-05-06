@@ -170,3 +170,19 @@ document.addEventListener('DOMContentLoaded', () => {
         item.style.animationDelay = `${index * 0.2}s`;
     });
 });
+
+
+// Mobile Menu Toggle Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const hamburgerIcons = document.querySelectorAll('.hamburger');
+    
+    hamburgerIcons.forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            const navContainer = e.currentTarget.parentElement; // should be .nav-bar or .container
+            const navLinks = navContainer.querySelector('.nav-links') || document.querySelector('.nav-links');
+            if (navLinks) {
+                navLinks.classList.toggle('active');
+            }
+        });
+    });
+});

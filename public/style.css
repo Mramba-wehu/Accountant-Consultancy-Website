@@ -1826,3 +1826,117 @@ html, body {
         gap: 20px;
     }
 }
+
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+   ========================================= */
+@media (max-width: 992px) {
+    .nav-subtitle {
+        display: none;
+    }
+    .hero h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Header & Nav */
+    .top-bar .container {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .middle-header .container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+    }
+    
+    .header-contact {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .contact-item {
+        justify-content: center;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+        display: block;
+        font-size: 1.8rem;
+        color: white;
+        cursor: pointer;
+        margin-left: auto;
+        padding: 15px;
+    }
+
+    .nav-bar .container {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #405374;
+        margin: 0;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .nav-cta {
+        display: none; /* Hide chat button on mobile nav to save space */
+    }
+
+    /* Hero */
+    .hero {
+        height: auto;
+        padding: 4rem 0;
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+    .cta-group {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Layout Grids */
+    .services-grid, .mv-grid, .values-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-content {
+        flex-direction: column;
+    }
+    
+    .side-image-container {
+        margin-top: 2rem;
+    }
+    
+    /* Footer */
+    .footer-top {
+        flex-direction: column;
+    }
+    
+    .footer-section {
+        margin-bottom: 2rem;
+    }
+}
