@@ -21,7 +21,7 @@ Led by **CPA. Mwanyamba Douglas Mwanje** (Managing Partner), we are committed to
 - Google Fonts (Outfit & Plus Jakarta Sans)
 
 ## Contact Information
-- **Email:** mwanje&associates@outlook.com
+- **Email:** mwanje_associates@outlook.com
 - **Phone:** +254 716 128 137 / +254 782 128 137
 - **Address:** Mombasa, Kenya
 

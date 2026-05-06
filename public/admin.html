@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access | Mwanje & Associates</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="admin-logo">
+                    <span class="logo-main">MWANJE</span>
+                    <span class="logo-sub">ASSOCIATES</span>
+                </div>
+                <h2>Admin Secure Access</h2>
+                <p id="status-message">Please enter your credentials to manage the portal.</p>
+            </div>
+
+            <!-- Login Form -->
+            <form class="admin-form" id="login-form">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="email" placeholder="Enter admin email" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-admin-login">
+                    <span>Send 2FA Code</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- 2FA Form (Hidden Initially) -->
+            <form class="admin-form" id="tfa-form" style="display: none;">
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> 2FA Code</label>
+                    <input type="text" id="tfa-code" placeholder="000000" required>
+                </div>
+                
+                <button type="submit" class="btn-admin-login">
+                    <span>Verify & Login</span>
+                    <i class="fas fa-check"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p><i class="fas fa-info-circle"></i> Authorized Personnel Only</p>
+                <a href="index.html" class="back-link"><i class="fas fa-home"></i> Back to Website</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const tfaForm = document.getElementById('tfa-form');
+        const statusMessage = document.getElementById('status-message');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            statusMessage.innerText = 'Verifying credentials...';
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusMessage.innerText = `Success! A 2FA code has been sent to ${email} (Check your local console for the Ethereal test link)`;
+                    statusMessage.style.color = '#10B981';
+                    if (data.previewUrl) {
+                        console.log("Check this URL for the test email: ", data.previewUrl);
+                    }
+                    loginForm.style.display = 'none';
+                    tfaForm.style.display = 'block';
+                } else {
+                    statusMessage.innerText = data.message;
+                    statusMessage.style.color = '#EF4444';
+                }
+            } catch (error) {
+                statusMessage.innerText = 'Network error occurred.';
+                statusMessage.style.color = '#EF4444';
+            }
+        });
+
+        tfaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('tfa-code').value;
+
+            statusMessage.innerText = 'Verifying code...';
+            
+            try {
+                const response = await fetch('/api/verify-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    statusMessage.innerText = 'Logged in successfully! Redirecting...';
+                    statusMessage.style.color = '#10B981';
+                    setTimeout(() => {
+                        window.location.href = 'admin-dashboard.html';
+                    }, 1000);
+                } else {
+                    statusMessage.innerText = data.message;
+                    statusMessage.style.color = '#EF4444';
+                }
+            } catch (error) {
+                statusMessage.innerText = 'Network error occurred.';
+                statusMessage.style.color = '#EF4444';
+            }
+        });
+    </script>
+</body>
+</html>

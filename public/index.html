@@ -26,6 +26,32 @@
     <meta name="author" content="Mwanje & Associates">
     <link rel="canonical" href="https://mwanjeassociates.co.ke/">
 
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AccountingService",
+      "name": "Mwanje & Associates",
+      "image": "https://mwanjeassociates.co.ke/logo.png",
+      "@id": "https://mwanjeassociates.co.ke/",
+      "url": "https://mwanjeassociates.co.ke/",
+      "telephone": "+254716128137",
+      "email": "mwanje_associates@outlook.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Mombasa",
+        "addressRegion": "Mombasa County",
+        "addressCountry": "KE"
+      },
+      "description": "Mwanje & Associates is a leading CPA firm in Mombasa providing expert outsourced accounting, tax services, payroll processing, and business advisory.",
+      "sameAs": [
+        "https://www.facebook.com/MwanjeAssociates",
+        "https://x.com/MwanjeAssociates",
+        "https://www.linkedin.com/company/mwanje-associates"
+      ]
+    }
+    </script>
+
     <link rel="stylesheet" href="style.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -78,7 +104,7 @@
                         <div class="contact-icon">📧</div>
                         <div class="contact-text">
                             <strong>Mail Us Today</strong>
-                            <span>mwanje&amp;associates@outlook.com</span>
+                            <span>mwanje_associates@outlook.com</span>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -276,5 +302,21 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Dynamically load content from CMS
+        fetch('/api/content')
+            .then(res => res.json())
+            .then(data => {
+                if(data.heroSubtitle) {
+                    const heroSubtitleEl = document.querySelector('.hero p');
+                    if(heroSubtitleEl) heroSubtitleEl.innerText = data.heroSubtitle;
+                }
+                if(data.aboutText) {
+                    const aboutTextEl = document.querySelector('.about-text p');
+                    if(aboutTextEl) aboutTextEl.innerText = data.aboutText;
+                }
+            })
+            .catch(err => console.error('Failed to load dynamic content:', err));
+    </script>
 </body>
 </html>

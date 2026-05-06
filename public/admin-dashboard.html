@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Mwanje & Associates</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .dashboard-header h2 { color: #0f172a; }
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .form-group textarea, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            margin-bottom: 20px;
+        }
+        .btn-save {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        #status-msg {
+            margin-top: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="admin-body">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2><i class="fas fa-cog"></i> Content Management</h2>
+            <button class="btn-logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+
+        <form id="content-form">
+            <div class="form-group">
+                <label>Hero Subtitle (Home Page)</label>
+                <input type="text" id="heroSubtitle" required>
+            </div>
+            <div class="form-group">
+                <label>About Us Text (Home Page)</label>
+                <textarea id="aboutText" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn-save"><i class="fas fa-save"></i> Save Changes</button>
+            <p id="status-msg"></p>
+        </form>
+    </div>
+
+    <script>
+        // Check authentication by attempting to fetch content
+        // If the server was protecting GET /api/content it would fail, 
+        // but currently we just protect POST. In a real app we'd verify session first.
+        
+        async function loadContent() {
+            try {
+                const response = await fetch('/api/content');
+                if (!response.ok) throw new Error('Failed to load');
+                const data = await response.json();
+                document.getElementById('heroSubtitle').value = data.heroSubtitle || '';
+                document.getElementById('aboutText').value = data.aboutText || '';
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        loadContent();
+
+        document.getElementById('content-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const heroSubtitle = document.getElementById('heroSubtitle').value;
+            const aboutText = document.getElementById('aboutText').value;
+            const statusMsg = document.getElementById('status-msg');
+
+            statusMsg.innerText = 'Saving...';
+            statusMsg.style.color = '#334155';
+
+            try {
+                const response = await fetch('/api/content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ heroSubtitle, aboutText })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    statusMsg.innerText = 'Changes saved successfully!';
+                    statusMsg.style.color = '#10b981';
+                    setTimeout(() => statusMsg.innerText = '', 3000);
+                } else {
+                    statusMsg.innerText = result.message || 'Unauthorized. Please login again.';
+                    statusMsg.style.color = '#ef4444';
+                }
+            } catch (err) {
+                statusMsg.innerText = 'Network error.';
+                statusMsg.style.color = '#ef4444';
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = 'admin.html';
+        });
+    </script>
+</body>
+</html>
